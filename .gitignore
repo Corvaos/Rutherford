@@ -1,0 +1,10 @@
+/out
+/build
+/cmake-build-debug
+
+/.vscode
+/.idea
+
+/vcpkg_installed
+
+CMakePresets.json
