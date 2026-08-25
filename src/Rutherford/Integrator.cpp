@@ -4,9 +4,7 @@
 
 #include "Rutherford/Integrator.h"
 
-#include "Rutherford/Simulation.h"
-
-void Integrator::step(std::vector<Particle>& particles, const double dt)
+void Integrator::step(std::vector<Particle>& heliumParticles, const std::vector<Particle>& goldParticles, const double dt)
 {
   /* Euler's Method
 
@@ -16,40 +14,42 @@ void Integrator::step(std::vector<Particle>& particles, const double dt)
 
   */
 
-  const std::vector<vaos::numerics::Vector3> forces = ForceCalculator::calculateCoulombForce(particles);
+  const std::vector<vaos::numerics::Vector3> forces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
 
   for (int i = 0; i < forces.size(); i++)
   {
-    particles[i].velocity += (forces[i]/particles[i].mass) * dt;
-    particles[i].position += particles[i].velocity * dt;
+    heliumParticles[i].momentum += (forces[i]) * dt;
+    heliumParticles[i].position += heliumParticles[i].getVelocity() * dt;
   }
 }
 
-void Integrator::stepVerlet(std::vector<Particle>& particles, const double dt)
+void Integrator::stepVerlet(std::vector<Particle>& heliumParticles, const std::vector<Particle>& goldParticles, const double dt)
 {
   /* Velocity Verlet
       *
       * Update POSITION
-      * Calculate FORCES->ACCELERATIONS
-      * Update VELOCITIES
-      * Store ACCELERATIONS
+      * Calculate FORCES->MOMENTUM
+      * Update MOMENTUMS
+      * Store FORCES
       *
       */
 
-  verletAccels.resize(particles.size());
-
-  for (Particle& particle : particles)
+  if (verletForces.empty())
   {
-    particle.position += particle.velocity * dt;
+    verletForces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
   }
 
-  const std::vector<vaos::numerics::Vector3> forces = ForceCalculator::calculateCoulombForce(particles);
+  for (int i = 0; i < heliumParticles.size(); i++)
+  {
+    heliumParticles[i].position += (heliumParticles[i].momentum + verletForces[i] * dt * 0.5) * dt / heliumParticles[i].mass;
+  }
+
+  const std::vector<vaos::numerics::Vector3> forces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
 
   for (int i = 0; i < forces.size(); i++)
   {
-    vaos::numerics::Vector3 accel = forces[i]/particles[i].mass;
-    particles[i].velocity += (accel + verletAccels[i]) * 0.5 * dt;
+    heliumParticles[i].momentum += (forces[i] + verletForces[i]) * 0.5 * dt;
 
-    verletAccels[i] = accel;
+    verletForces[i] = forces[i];
   }
 }

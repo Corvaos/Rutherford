@@ -18,6 +18,9 @@ private:
   std::unique_ptr<RenderManager> renderManager;
   std::unique_ptr<Simulation> simulationManager;
 
+  void initCoreParticles(int resolution, int rows) const;
+  void launchWave(int resolution) const;
+
 public:
   void run(double dt) const;
 
@@ -26,8 +29,9 @@ public:
   void addParticle(const vaos::numerics::Vector3& position, const vaos::numerics::Vector3& velocity, double mass,
                    double charge, int atomType) const;
 
-  void initCoreParticles() const;
-  void launchWave(int resolution) const;
+
+
+  void setup(int resolution, int rows) const;
 
   Application();
 };

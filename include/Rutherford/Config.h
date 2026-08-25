@@ -7,9 +7,13 @@
 
 struct Config
 {
-  static constexpr double DT = 1e-5;
+  static constexpr double DT = 5e-7;
   static constexpr int RATE = 10;
-  static constexpr int RESOLUTION = 1000;
+  static constexpr int HELIUM_RESOLUTION = 100;
+  static constexpr int GOLD_RESOLUTION = 10;
+  static constexpr int GOLD_ROWS = 2;
+
+  static constexpr double ZOOM = 1;
 
   enum INTEGRATOR_TYPES
   {

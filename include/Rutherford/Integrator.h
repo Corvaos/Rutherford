@@ -13,12 +13,12 @@
 
 class Integrator
 {
-  inline static std::vector<vaos::numerics::Vector3> verletAccels = {};
+  inline static std::vector<vaos::numerics::Vector3> verletForces = {};
 
 public:
-  static void step(std::vector<Particle>& particles, double dt);
+  static void step(std::vector<Particle>& heliumParticles, const std::vector<Particle>& goldParticles, double dt);
 
-  static void stepVerlet(std::vector<Particle>& particles, double dt);
+  static void stepVerlet(std::vector<Particle>& heliumParticles, const std::vector<Particle>& goldParticles, double dt);
 };
 
 

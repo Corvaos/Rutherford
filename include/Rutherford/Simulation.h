@@ -14,10 +14,13 @@
 class Simulation
 {
 public:
-  std::vector<Particle> particles;
+  std::vector<Particle> heliumParticles;
+  std::vector<Particle> goldParticles;
+
+  std::vector<Particle*> particles;
 
   void addSimParticle(const vaos::numerics::Vector3& position, const vaos::numerics::Vector3& velocity, double mass,
-                      double charge);
+                      double charge, int typeID);
 
   void runStep(double dt);
 };

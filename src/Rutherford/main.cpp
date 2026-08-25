@@ -5,10 +5,9 @@
 
 int main()
 {
-  Application application = Application();
+  const Application application = Application();
 
-  application.initCoreParticles();
-  application.launchWave(Config::RESOLUTION);
+  application.setup(Config::GOLD_RESOLUTION, Config::GOLD_ROWS);
 
   while (application.active())
   {
