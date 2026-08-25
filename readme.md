@@ -1,4 +1,4 @@
-# N-Body Simulator
+# Rutherford Experiment Simulator
 
 # Purpose
 This C++ program simulates the Rutherford experiment and renders it using OpenGL using my own personal [Vaos-Renderer]([Vaos-Renderer](https://github.com/Corvaos/Vaos-Renderer)) library.
