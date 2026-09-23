@@ -4,6 +4,8 @@
 
 #include "Rutherford/Integrator.h"
 
+#include <complex>
+
 void Integrator::step(std::vector<Particle>& heliumParticles, const std::vector<Particle>& goldParticles, const double dt)
 {
   /* Euler's Method
@@ -14,12 +16,16 @@ void Integrator::step(std::vector<Particle>& heliumParticles, const std::vector<
 
   */
 
-  const std::vector<vaos::numerics::Vector3> forces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
-
-  for (int i = 0; i < forces.size(); i++)
+  if (verletForces.empty()) [[unlikely]]
   {
-    heliumParticles[i].momentum += (forces[i]) * dt;
-    heliumParticles[i].position += heliumParticles[i].getVelocity() * dt;
+    verletForces.resize(heliumParticles.size());
+  }
+  verletForces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
+
+  for (int i = 0; i < verletForces.size(); i++)
+  {
+    heliumParticles[i].momentum += (verletForces[i]) * dt;
+    heliumParticles[i].position += heliumParticles[i].velocity * dt;
   }
 }
 
@@ -29,27 +35,37 @@ void Integrator::stepVerlet(std::vector<Particle>& heliumParticles, const std::v
       *
       * Update POSITION
       * Calculate FORCES->MOMENTUM
+      * Calculate VELOCITY
       * Update MOMENTUMS
       * Store FORCES
       *
       */
 
-  if (verletForces.empty())
+  if (verletForces.empty()) [[unlikely]]
   {
     verletForces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
   }
 
   for (int i = 0; i < heliumParticles.size(); i++)
   {
-    heliumParticles[i].position += (heliumParticles[i].momentum + verletForces[i] * dt * 0.5) * dt / heliumParticles[i].mass;
+    heliumParticles[i].velocity = heliumParticles[i].momentum *
+      sqrt(1.0 - (heliumParticles[i].velocity.squareLength() / (SPEED_OF_LIGHT * SPEED_OF_LIGHT))) /    // LORENTZ FACTOR
+        heliumParticles[i].mass;
+    heliumParticles[i].momentum += verletForces[i] * dt * 0.5;
   }
 
-  const std::vector<vaos::numerics::Vector3> forces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
-
-  for (int i = 0; i < forces.size(); i++)
+  for (auto & heliumParticle : heliumParticles)
   {
-    heliumParticles[i].momentum += (forces[i] + verletForces[i]) * 0.5 * dt;
+    heliumParticle.position += heliumParticle.velocity * dt;
+  }
 
-    verletForces[i] = forces[i];
+  verletForces = ForceCalculator::calculateCoulombForce(heliumParticles, goldParticles);
+
+  for (int i = 0; i < heliumParticles.size(); i++)
+  {
+    heliumParticles[i].velocity = heliumParticles[i].momentum *
+      sqrt(1.0 - (heliumParticles[i].velocity.squareLength() / (SPEED_OF_LIGHT * SPEED_OF_LIGHT))) /    // LORENTZ FACTOR
+        heliumParticles[i].mass;
+    heliumParticles[i].momentum += verletForces[i] * dt * 0.5;
   }
 }

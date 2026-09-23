@@ -7,13 +7,18 @@
 
 struct Config
 {
-  static constexpr double DT = 5e-7;
-  static constexpr int RATE = 10;
-  static constexpr int HELIUM_RESOLUTION = 100;
-  static constexpr int GOLD_RESOLUTION = 10;
-  static constexpr int GOLD_ROWS = 2;
+  static constexpr double DT = 2e-21;
+  static constexpr int RATE = 100;
 
-  static constexpr double ZOOM = 1;
+  static constexpr int HELIUM_RESOLUTION = 100;
+  static constexpr double HELIUM_SPEED_PERCENT = 0.03;
+
+  static constexpr int GOLD_ROWS = 3;
+  static constexpr double GOLD_WIDTH = 1e-8;
+  // Atoms are approximately 100 picometers apart (10^-10, 1e-10 meters)
+  static constexpr double GOLD_SEPARATION = 1e-10;
+
+  static constexpr double ZOOM = 1e9;
 
   enum INTEGRATOR_TYPES
   {

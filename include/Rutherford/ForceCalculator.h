@@ -15,6 +15,7 @@ class ForceCalculator
 
 public:
   // !! Assumes the gold particle is static !!
+  // !! We assume that each helium particle is fired independently and thus does not interact with any others !!
   static std::vector<vaos::numerics::Vector3> calculateCoulombForce(const std::vector<Particle>& heliumParticles,
                                                                     const std::vector<Particle>& goldParticles)
   {

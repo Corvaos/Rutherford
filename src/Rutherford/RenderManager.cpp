@@ -2,6 +2,7 @@
 // Created by corvaos on 8/17/26.
 //
 
+#include "Rutherford/Config.h"
 #include "Rutherford/RenderManager.h"
 
 RenderManager::RenderManager(const std::string& name, const int& windowWidth, const int& windowHeight) :
@@ -33,5 +34,5 @@ void RenderManager::assignTransforms(const vaos::numerics::Transform& transform,
 
 void RenderManager::drawAll()
 {
-  window.render();
+  window.render(Config::ZOOM);
 }

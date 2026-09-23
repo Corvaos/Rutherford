@@ -7,7 +7,7 @@ int main()
 {
   const Application application = Application();
 
-  application.setup(Config::GOLD_RESOLUTION, Config::GOLD_ROWS);
+  application.setup();
 
   while (application.active())
   {

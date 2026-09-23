@@ -5,8 +5,10 @@ layout(location = 0) in vec3 aPos;
 out vec3 localPosition;
 
 uniform mat4 model;
+uniform mat4 projection;
+uniform mat4 zoom;
 
 void main() {
     localPosition = aPos;
-    gl_Position = model * vec4(aPos, 1.0);
+    gl_Position = zoom * projection * model * vec4(aPos, 1.0);
 }

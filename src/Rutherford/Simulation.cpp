@@ -7,7 +7,7 @@
 void Simulation::addSimParticle(const vaos::numerics::Vector3& position, const vaos::numerics::Vector3& velocity,
                                 const double mass, const double charge, const int typeID)
 {
-  if (typeID == PARTICLE_TYPE::ATOM_GOLD_197)
+  if (typeID == ATOM_GOLD_197)
   {
     goldParticles.emplace_back(position, velocity, mass, charge);
   } else

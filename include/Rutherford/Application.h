@@ -11,6 +11,7 @@
 #include "vaos/renderer/GLFWContext.h"
 
 #include <memory>
+#include <random>
 
 class Application
 {
@@ -18,20 +19,17 @@ private:
   std::unique_ptr<RenderManager> renderManager;
   std::unique_ptr<Simulation> simulationManager;
 
-  void initCoreParticles(int resolution, int rows) const;
-  void launchWave(int resolution) const;
+  void addParticle(const vaos::numerics::Vector3& position, const vaos::numerics::Vector3& velocity, double mass,
+                   double charge, int atomType) const;
+  void initCoreParticles() const;
+  void launchWave() const;
 
 public:
   void run(double dt) const;
 
   [[nodiscard]] bool active() const;
 
-  void addParticle(const vaos::numerics::Vector3& position, const vaos::numerics::Vector3& velocity, double mass,
-                   double charge, int atomType) const;
-
-
-
-  void setup(int resolution, int rows) const;
+  void setup() const;
 
   Application();
 };

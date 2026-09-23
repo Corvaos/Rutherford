@@ -19,5 +19,8 @@ Various methods can be applied through `Config.h`, primarily the `INTEGRATOR` va
 # Rendering
 All visual output is rendered through OpenGL through the [Vaos-Renderer](https://github.com/Corvaos/Vaos-Renderer) library of my own creation.
 
+# Physics
+This program utilizes the *Coulomb Force*, or the *Electrostatic Force*, the attraction and repulsion of charged particles. This simulates positively charged helium nuclei (alpha particles) fired at a thin positively charged gold foil. Relativistic motion using the **Lorentz Factor** is then also implemented due to the massive velocities at which these alpha particles are being fired at. 
+
 # Development
 This program currently demonstrates approximately `O(n)` time complexity, as each particle interacts only once with the core particle, but not any neighboring particles. This is to simulate the effect of each particle being fired one at a time to reflect the original experiment's practices.

@@ -6,19 +6,26 @@
 
 #include "vaos/renderer/Mesh/MeshFactory.h"
 
+double randomValue(const double min, const double max) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> num(min, max);
+  return num(gen);
+}
+
 Application::Application()
 {
   vaos::renderer::GLFWContext::init();
-  renderManager = std::make_unique<RenderManager>("Rutherford", 1920, 1080);
+  renderManager = std::make_unique<RenderManager>("Rutherford", 1920, 1920);
   simulationManager = std::make_unique<Simulation>();
 
   vaos::renderer::MeshFactory::generateCircle(100, true);
 }
 
-void Application::setup(const int resolution, const int rows) const
+void Application::setup() const
 {
-  initCoreParticles(resolution, rows);
-  launchWave(Config::HELIUM_RESOLUTION);
+  initCoreParticles();
+  launchWave();
 
   for (int i = 0; i < simulationManager->goldParticles.size(); i++)
   {
@@ -39,7 +46,8 @@ void Application::run(const double dt) const
 
   for (int i = 0; i < simulationManager->particles.size(); i++)
   {
-    renderManager->assignTransforms(vaos::numerics::Transform(simulationManager->particles[i]->position, 0, 0.01), i);
+    renderManager->assignTransforms(
+      vaos::numerics::Transform(simulationManager->particles[i]->position, 0, 0.0075 / Config::ZOOM), i);
   }
 
   renderManager->drawAll();
@@ -48,52 +56,49 @@ void Application::run(const double dt) const
 void Application::addParticle(const vaos::numerics::Vector3& position, const vaos::numerics::Vector3& velocity,
                               const double mass, const double charge, const int atomType) const
 {
-  simulationManager->addSimParticle(position, velocity, mass, charge, atomType);
+  simulationManager->addSimParticle(position, velocity*mass, mass, charge, atomType);
   renderManager->addRenderParticle(position, mass, atomType);
 }
 
-void Application::initCoreParticles(const int resolution, const int rows) const
+void Application::initCoreParticles() const
 {
-  const int r = resolution / rows;
+  constexpr double xAmount = Config::GOLD_WIDTH / Config::GOLD_SEPARATION;
 
-  const double xOffset = 2.0 / (r + 1);
-  const double yOffset = 1.0 / (r + 1);
-  double y = 0;
-
-  for (int i = 0; i < rows; i++)
+  for (int i = 0; i < Config::GOLD_ROWS; i++)
   {
-    double x = -1;
+    double x = -Config::GOLD_WIDTH / 2;
+
     if (i % 2 == 1)
     {
-      x += xOffset / 2;
+      x += Config::GOLD_SEPARATION / 2;
     }
-    for (int j = 0; j < r; j++)
+
+    for (int j = 0; j < xAmount; j++)
     {
-      x += xOffset;
+      x += Config::GOLD_SEPARATION;
       addParticle(
-        vaos::numerics::Vector3(x, y, 0),
+        vaos::numerics::Vector3(x + randomValue(-1e-11, 3e-11), i * Config::GOLD_SEPARATION + randomValue(-1e-11, 3e-11), 0),
         vaos::numerics::Vector3(0, 0, 0),
         3.27e-25,
-        1.266e-16,
+        79,
         PARTICLE_TYPE::ATOM_GOLD_197
       );
     }
-    y += yOffset;
   }
 }
 
-void Application::launchWave(const int resolution) const
+void Application::launchWave() const
 {
-  const double r = 2.0/(resolution+1);
-  double offset = -1;
-  for (int i = 0; i < resolution; i++)
+  constexpr double xOffset = Config::GOLD_WIDTH / (Config::HELIUM_RESOLUTION + 1);
+  double x = -Config::GOLD_WIDTH / 2;
+  for (int i = 0; i < Config::HELIUM_RESOLUTION; i++)
   {
-    offset += r;
+    x += xOffset;
     addParticle(
-      vaos::numerics::Vector3(offset, -0.75, 0),
-      vaos::numerics::Vector3(0, 1.66e-24, 0),
+      vaos::numerics::Vector3(x, -1e-10, 0),
+      vaos::numerics::Vector3(0, SPEED_OF_LIGHT * Config::HELIUM_SPEED_PERCENT, 0),
       6.64e-27,
-      3.204e-19,
+      2,
       PARTICLE_TYPE::ATOM_HELIUM_4
     );
   }

@@ -45,7 +45,7 @@ include(FetchContent)
 FetchContent_Declare(
         VaosRenderer
         GIT_REPOSITORY https://github.com/Corvaos/Vaos-Renderer.git
-        GIT_TAG de02b809b0664eddeaf28167ea88c704a248d524
+        GIT_TAG v0.1.0
 )
 
 FetchContent_MakeAvailable(VaosRenderer)
